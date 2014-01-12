@@ -1,14 +1,11 @@
 use strict;
 use warnings;
 package Dist::Zilla::Role::File::ChangeNotification;
+# git description: v0.001-16-g45c31a6
+$Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.002';
 BEGIN {
   $Dist::Zilla::Role::File::ChangeNotification::AUTHORITY = 'cpan:ETHER';
 }
-{
-  $Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.001';
-}
-# git description: 40f033e
-
 # ABSTRACT: Receive notification when something changes a file's contents
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -26,7 +23,10 @@ has on_changed => (
     handles => { has_changed => 'execute_method' },
     lazy => 1,
     default => sub {
-        sub { die 'content of ', shift->name, ' has changed!' }
+        sub {
+            my ($file, $new_content) = @_;
+            die 'content of ', $file->name, ' has changed!';
+        }
     },
 );
 
@@ -36,8 +36,7 @@ sub watch_file
 
     return if $self->_content_checksum;
 
-    # this may not be the correct encoding, but things should work out okay
-    # anyway - all we care about is deterministically getting bytes back
+    # Storing a checksum initiates the "watch" process
     $self->_content_checksum($self->__calculate_checksum);
     return;
 }
@@ -45,6 +44,8 @@ sub watch_file
 sub __calculate_checksum
 {
     my $self = shift;
+    # this may not be the correct encoding, but things should work out okay
+    # anyway - all we care about is deterministically getting bytes back
     md5_hex(encode_utf8($self->content))
 }
 
@@ -55,15 +56,28 @@ around content => sub {
     # pass through if getter
     return $self->$orig if @_ < 1;
 
+    # store the new content
+    # XXX possible TODO: do not set the new content until after the callback
+    # is invoked. Talk to me if you care about this in either direction!
     my $content = shift;
     $self->$orig($content);
 
-    # do nothing extra if we haven't got a checksum yet
     my $old_checksum = $self->_content_checksum;
+
+    # do nothing extra if we haven't got a checksum yet
     return $content if not $old_checksum;
 
-    $self->has_changed($content) if $self->__calculate_checksum ne $old_checksum;
-    return $content;
+    # ...or if the content hasn't actually changed
+    my $new_checksum = $self->__calculate_checksum;
+    return $content if $old_checksum eq $new_checksum;
+
+    # update the checksum to reflect the new content
+    $self->_content_checksum($new_checksum);
+
+    # invoke the callback
+    $self->has_changed($content);
+
+    return $self->content;
 };
 
 1;
@@ -74,7 +88,7 @@ __END__
 
 =encoding UTF-8
 
-=for :stopwords Karen Etheridge irc
+=for :stopwords Karen Etheridge Yanick Champoux irc
 
 =head1 NAME
 
@@ -82,7 +96,7 @@ Dist::Zilla::Role::File::ChangeNotification - Receive notification when somethin
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -113,25 +127,26 @@ that source file's content is later modified.
 
 =head1 ATTRIBUTES
 
-=over 4
+=head2 C<on_changed>
 
-=item * C<on_changed>: a sub which is invoked against the file when the file's
+A method which is invoked against the file when the file's
 content has changed.  The new file content is passed as an argument.  If you
 need to do something in your plugin at this point, define the sub as a closure
 over your plugin object, as demonstrated in the L</SYNOPSIS>.
 
-=back
+B<Be careful> of infinite loops, which can result if your sub changes the same
+file's content again! Add a mechanism to return without altering content if
+particular conditions are met (say that the needed content is already present,
+or even the value of a particular suitably-scoped variable.
 
 =head1 METHODS
 
-=over 4
+=head2 C<watch_file>
 
-=item * C<watch_file> - Once this method is called, every subsequent change to
+Once this method is called, every subsequent change to
 the file's content will result in your C<on_changed> sub being invoked against
-the file.  The new content is passed as the argument to the sub; The return
+the file.  The new content is passed as the argument to the sub; the return
 value is ignored.
-
-=back
 
 =head1 SUPPORT
 
@@ -163,5 +178,9 @@ This software is copyright (c) 2013 by Karen Etheridge.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
+
+=head1 CONTRIBUTOR
+
+Yanick Champoux <yanick@babyl.dyndns.org>
 
 =cut

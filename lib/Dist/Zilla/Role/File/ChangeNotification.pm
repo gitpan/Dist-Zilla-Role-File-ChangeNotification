@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 package Dist::Zilla::Role::File::ChangeNotification;
-# git description: v0.001-16-g45c31a6
-$Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.002';
 BEGIN {
   $Dist::Zilla::Role::File::ChangeNotification::AUTHORITY = 'cpan:ETHER';
 }
+# git description: v0.002-1-gc914dc2
+$Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.003';
 # ABSTRACT: Receive notification when something changes a file's contents
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -96,7 +96,7 @@ Dist::Zilla::Role::File::ChangeNotification - Receive notification when somethin
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 

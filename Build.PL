@@ -64,7 +64,7 @@ EOW
         "Karen Etheridge <ether\@cpan.org>"
       ],
       "dist_name" => "Dist-Zilla-Role-File-ChangeNotification",
-      "dist_version" => "0.004",
+      "dist_version" => "0.005",
       "license" => "perl",
       "module_name" => "Dist::Zilla::Role::File::ChangeNotification",
       "recommends" => {},

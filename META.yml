@@ -34,10 +34,10 @@ no_index:
 provides:
   Dist::Zilla::Role::File::ChangeNotification:
     file: lib/Dist/Zilla/Role/File/ChangeNotification.pm
-    version: '0.004'
+    version: '0.005'
   Dist::Zilla::Role::FileWatcher:
     file: lib/Dist/Zilla/Role/FileWatcher.pm
-    version: '0.004'
+    version: '0.005'
 requires:
   Digest::MD5: '0'
   Dist::Zilla::Plugin::MetaResources: '4.300039'
@@ -54,7 +54,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Role-File-ChangeNotification
   homepage: https://github.com/karenetheridge/Dist-Zilla-Role-File-ChangeNotification
   repository: https://github.com/karenetheridge/Dist-Zilla-Role-File-ChangeNotification.git
-version: '0.004'
+version: '0.005'
 x_Dist_Zilla:
   perl:
     version: '5.021003'
@@ -570,7 +570,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.004
+          tag: v0.005
           tag_format: v%v%t
           tag_message: v%v%t
           time_zone: local

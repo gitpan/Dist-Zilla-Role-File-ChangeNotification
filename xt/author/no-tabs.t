@@ -16,6 +16,7 @@ my @files = (
     't/03-default-callback.t',
     't/04-plugin-watch.t',
     't/05-plugin-lock.t',
+    't/06-two-watchers.t',
     'xt/author/00-compile.t',
     'xt/author/no-tabs.t',
     'xt/author/pod-spell.t',

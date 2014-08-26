@@ -157,11 +157,11 @@
    "provides" : {
       "Dist::Zilla::Role::File::ChangeNotification" : {
          "file" : "lib/Dist/Zilla/Role/File/ChangeNotification.pm",
-         "version" : "0.004"
+         "version" : "0.005"
       },
       "Dist::Zilla::Role::FileWatcher" : {
          "file" : "lib/Dist/Zilla/Role/FileWatcher.pm",
-         "version" : "0.004"
+         "version" : "0.005"
       }
    },
    "release_status" : "stable",
@@ -179,7 +179,7 @@
       "x_IRC" : "irc://irc.perl.org/#distzilla",
       "x_MailingList" : "http://dzil.org/#mailing-list"
    },
-   "version" : "0.004",
+   "version" : "0.005",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.021003"
@@ -856,7 +856,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.004",
+                  "tag" : "v0.005",
                   "tag_format" : "v%v%t",
                   "tag_message" : "v%v%t",
                   "time_zone" : "local"

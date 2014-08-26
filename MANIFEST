@@ -19,6 +19,7 @@ t/02-double-change.t
 t/03-default-callback.t
 t/04-plugin-watch.t
 t/05-plugin-lock.t
+t/06-two-watchers.t
 weaver.ini
 xt/author/00-compile.t
 xt/author/no-tabs.t

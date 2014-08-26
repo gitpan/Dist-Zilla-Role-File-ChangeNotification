@@ -52,7 +52,7 @@ my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
     {
         add_files => {
-            'source/dist.ini' => simple_ini(
+            path(qw(source dist.ini)) => simple_ini(
                 [ GatherDir => ],
                 [ MyPlugin => { source_file => 'immutable.dat' } ],
             ),
@@ -61,10 +61,14 @@ my $tzil = Builder->from_config(
     },
 );
 
+$tzil->chrome->logger->set_debug(1);
 like(
     exception { $tzil->build },
     qr{content of immutable\.dat has changed!},
     'detected attempt to change file after signature was created from it',
 );
+
+diag 'got log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;

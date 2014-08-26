@@ -3,7 +3,6 @@ use warnings FATAL => 'all';
 
 use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
-use Test::Fatal;
 use Test::DZil;
 use Path::Tiny;
 
@@ -15,7 +14,6 @@ use Dist::Zilla::Role::File::ChangeNotification;
     package Dist::Zilla::Plugin::Appender;
     use Moose;
     use Module::Runtime 'use_module';
-    use Moose::Util::TypeConstraints;
     with 'Dist::Zilla::Role::FileMunger';
 
     # appends an __END__ statement to all Foo files
@@ -80,7 +78,7 @@ my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
     {
         add_files => {
-            'source/dist.ini' => simple_ini(
+            path(qw(source dist.ini)) => simple_ini(
                 [ 'GatherDir' ],
                 [ 'Appender' ],
                 [ 'Setter' ],
@@ -91,15 +89,16 @@ my $tzil = Builder->from_config(
     },
 );
 
+$tzil->chrome->logger->set_debug(1);
 $tzil->build;
-
-note 'log messages:';
-note '  ', $_ foreach @{ $tzil->log_messages };
 
 like(
     $tzil->slurp_file( 'build/lib/Foo.pm' ),
     qr'__END__',
     'MyPlugin1 has ensured that a footer is present in the finalized file',
 );
+
+diag 'got log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;

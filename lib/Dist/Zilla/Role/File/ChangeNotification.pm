@@ -1,11 +1,8 @@
 use strict;
 use warnings;
 package Dist::Zilla::Role::File::ChangeNotification;
-BEGIN {
-  $Dist::Zilla::Role::File::ChangeNotification::AUTHORITY = 'cpan:ETHER';
-}
-# git description: v0.002-1-gc914dc2
-$Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.003';
+# git description: v0.003-18-g5b4518f
+$Dist::Zilla::Role::File::ChangeNotification::VERSION = '0.004';
 # ABSTRACT: Receive notification when something changes a file's contents
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -21,6 +18,7 @@ has on_changed => (
     isa => 'CodeRef',
     traits => ['Code'],
     handles => { has_changed => 'execute_method' },
+    predicate => 'has_on_changed',
     lazy => 1,
     default => sub {
         sub {
@@ -88,15 +86,13 @@ __END__
 
 =encoding UTF-8
 
-=for :stopwords Karen Etheridge Yanick Champoux irc
-
 =head1 NAME
 
 Dist::Zilla::Role::File::ChangeNotification - Receive notification when something changes a file's contents
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -105,7 +101,7 @@ version 0.003
     {
         my $self = shift;
 
-        my ($source_file) = grep { $_->name eq $self->source } @{$self->zilla->files};
+        my ($source_file) = grep { $_->name eq 'some_name' } @{$self->zilla->files};
         # ... do something with this file ...
 
         Dist::Zilla::Role::File::ChangeNotification->meta->apply($source_file);
@@ -148,7 +144,14 @@ the file's content will result in your C<on_changed> sub being invoked against
 the file.  The new content is passed as the argument to the sub; the return
 value is ignored.
 
+=head1 LIMITATIONS
+
+At the moment, a file can only be watched by one thing at a time. This may
+change in a future release, if a valid use case can be found.
+
 =head1 SUPPORT
+
+=for stopwords irc
 
 Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Role-File-ChangeNotification>
 (or L<bug-Dist-Zilla-Role-File-ChangeNotification@rt.cpan.org|mailto:bug-Dist-Zilla-Role-File-ChangeNotification@rt.cpan.org>).
@@ -157,6 +160,10 @@ I am also usually active on irc, as 'ether' at C<irc.perl.org>.
 =head1 SEE ALSO
 
 =over 4
+
+=item *
+
+L<Dist::Zilla::Role::FileWatcher> - in this distribution, for providing an interface for a plugin to watch a file
 
 =item *
 
@@ -180,6 +187,8 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =head1 CONTRIBUTOR
+
+=for stopwords Yanick Champoux
 
 Yanick Champoux <yanick@babyl.dyndns.org>
 

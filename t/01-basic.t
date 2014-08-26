@@ -60,7 +60,7 @@ my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
     {
         add_files => {
-            'source/dist.ini' => simple_ini(
+            path(qw(source dist.ini)) => simple_ini(
                 [ GatherDir => ],
                 [ MyPlugin => uc => { function => 'uc', source_file => 'lib/Foo.pm' } ],
                 [ MyPlugin => lc => { function => 'lc', source_file => 'lib/Foo.pm' } ],
@@ -74,10 +74,11 @@ CODE
     },
 );
 
+$tzil->chrome->logger->set_debug(1);
 like(
     exception { $tzil->build },
     qr{someone tried to munge lib/Foo.pm after we read from it. You need to adjust the load order of your plugins},
-    'detected attempt to change README after signature was created from it',
+    'detected attempt to change file after signature was created from it',
 );
 
 # ATTENTION! I still haven't decided whether the $file->content at the time of
@@ -106,5 +107,8 @@ CODE
     ],
     'callback is invoked with the correct arguments: the new content that cannot be set in the file',
 );
+
+diag 'got log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;
